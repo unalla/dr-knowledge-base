@@ -1,0 +1,7 @@
+# Ignore all terraform variables files
+*.tfvars
+*.tfvars.json
+
+# Specifically ignore files often used for secrets
+secrets.tfvars
+terraform.tfvars
