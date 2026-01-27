@@ -1,0 +1,36 @@
+name: 'Terraform Deploy'
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read  # Required for checkout
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::884458154630:role/GitHubActions-DR-Role
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform init -reconfigure
+        
+      - name: Terraform Plan
+        run: terraform -chdir=terraform plan
+
+      - name: Terraform Apply 
+        env:          
+          TF_VAR_pinecone_api_key: ${{ secrets.PINECONE_API_KEY }}
+          TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+        run: terraform -chdir=terraform apply -auto-approve
