@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "pinecone_api_key" {
   description = "API Key for Pinecone Vector Database"
   type        = string
-  sensitive   = true # Prevents the key from being logged in plain text
+  sensitive   = true # Prevents the key from being logged in plain text  
 }
 
 variable "openai_api_key" {

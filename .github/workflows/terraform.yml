@@ -27,10 +27,13 @@ jobs:
         run: terraform -chdir=terraform init -reconfigure
         
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan
+        env:          
+          TF_VAR_pinecone_api_key: ${{ secrets.PINECONE_API_KEY }}
+          TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+        run: terraform -chdir=terraform plan -input=false
 
       - name: Terraform Apply 
         env:          
           TF_VAR_pinecone_api_key: ${{ secrets.PINECONE_API_KEY }}
           TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-        run: terraform -chdir=terraform apply -auto-approve
+        run: terraform -chdir=terraform apply -auto-approve -input=false
