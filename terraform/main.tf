@@ -6,20 +6,20 @@ data "archive_file" "lambda_zip" {
 }
 
 # 2. IAM Role for the Lambda function
-resource "aws_iam_role" "lambda_exec_role" {
-  name = "dr_lambda_execution_role"
+# resource "aws_iam_role" "lambda_exec_role" {
+#   name = "dr_lambda_execution_role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-    }]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [{
+#       Action = "sts:AssumeRole"
+#       Effect = "Allow"
+#       Principal = {
+#         Service = "lambda.amazonaws.com"
+#       }
+#     }]
+#   })
+# }
 
 # 3. Attach basic logging and S3 read permissions
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
@@ -40,6 +40,34 @@ resource "aws_iam_role_policy" "s3_read_policy" {
     }]
   })
 }
+
+  name = "lambda_management_policy"
+  role = aws_iam_role.github_actions_role.id # The role you created earlier
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "lambda:CreateFunction",
+          "lambda:UpdateFunctionCode",
+          "lambda:UpdateFunctionConfiguration",
+          "lambda:DeleteFunction",
+          "lambda:GetFunction",
+          "lambda:ListFunctions",
+          "lambda:PublishVersion"
+        ],
+        Resource = "*" # You can restrict this to "arn:aws:lambda:region:account-id:function:*"
+      },
+      {
+        # CRITICAL: This allows the deployer to assign an execution role to the Lambda
+        Effect = "Allow",
+        Action = "iam:PassRole",
+        Resource = "arn:aws:iam::your-account-id:role/your-lambda-execution-role"
+      }
+    ]
+  })
 
 # 4. Define the Lambda Function
 resource "aws_lambda_function" "ingest_lambda" {
