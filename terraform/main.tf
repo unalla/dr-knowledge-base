@@ -41,33 +41,7 @@ resource "aws_iam_role_policy" "s3_read_policy" {
   })
 }
 
-  name = "lambda_management_policy"
-  role = aws_iam_role.github_actions_role.id # The role you created earlier
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "lambda:CreateFunction",
-          "lambda:UpdateFunctionCode",
-          "lambda:UpdateFunctionConfiguration",
-          "lambda:DeleteFunction",
-          "lambda:GetFunction",
-          "lambda:ListFunctions",
-          "lambda:PublishVersion"
-        ],
-        Resource = "*" # You can restrict this to "arn:aws:lambda:region:account-id:function:*"
-      },
-      {
-        # CRITICAL: This allows the deployer to assign an execution role to the Lambda
-        Effect = "Allow",
-        Action = "iam:PassRole",
-        Resource = "arn:aws:iam::your-account-id:role/your-lambda-execution-role"
-      }
-    ]
-  })
+  
 
 # 4. Define the Lambda Function
 resource "aws_lambda_function" "ingest_lambda" {
