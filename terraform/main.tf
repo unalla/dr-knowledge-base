@@ -22,24 +22,24 @@ data "archive_file" "lambda_zip" {
 # }
 
 # 3. Attach basic logging and S3 read permissions
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
-  role       = aws_iam_role.lambda_exec_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
+# resource "aws_iam_role_policy_attachment" "lambda_logs" {
+#   role       = aws_iam_role.lambda_exec_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+# }
 
-resource "aws_iam_role_policy" "s3_read_policy" {
-  name = "lambda_s3_read_policy"
-  role = aws_iam_role.lambda_exec_role.id
+# resource "aws_iam_role_policy" "s3_read_policy" {
+#   name = "lambda_s3_read_policy"
+#   role = aws_iam_role.lambda_exec_role.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["s3:GetObject"]
-      Resource = ["arn:aws:s3:::dr-ai-runbooks/runbooks/*"]
-    }]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [{
+#       Effect   = "Allow"
+#       Action   = ["s3:GetObject"]
+#       Resource = ["arn:aws:s3:::dr-ai-runbooks/runbooks/*"]
+#     }]
+#   })
+# }
 
   
 
