@@ -48,7 +48,7 @@ resource "aws_lambda_function" "ingest_lambda" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   function_name    = "dr-runbook-ingestor"
-  role             = "dr_lambda_execution_role" # aws_iam_role.lambda_exec_role.arn
+  role             = "arn:aws:iam::884458154630:role/dr_lambda_execution_role" # aws_iam_role.lambda_exec_role.arn
   handler          = "lambda.lambda_handler" # filename.function_name
   runtime          = "python3.11"
   timeout          = 30
